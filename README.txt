@@ -65,22 +65,24 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 (or jpg, jpeg, gif).
 2. This is the second screen shot
 
+== Shortcodes ==
+
+= [gn_table_works] =
+
+Displays a responsive table of Works.
+
+Attributes:
+* None
+
 == Changelog ==
 
-= 1.0 =
-* A change since the previous version.
-* Another change.
+= 1.0.2 =
+* Added `[gn_table_works]` shortcode.
+* Implemented check for Advanced Custom Fields PRO.
 
-= 0.5 =
-* List versions from most recent at top to oldest at bottom.
-
-== Upgrade Notice ==
-
-= 1.0 =
-Upgrade notices describe the reason a user should upgrade.  No more than 300 characters.
-
-= 0.5 =
-This version fixes a security related bug.  Upgrade immediately.
+= 1.0.1 =
+* Integrated Plugin Update Checker.
+* Added ACF Pro activation dependency check.
 
 == Arbitrary section ==
 
