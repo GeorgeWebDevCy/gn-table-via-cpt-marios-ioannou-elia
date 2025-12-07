@@ -2,3 +2,72 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
+
+.gn-works-table-container {
+	width: 100%;
+	overflow-x: auto;
+	margin: 20px 0;
+}
+
+.gn-works-table {
+	width: 100%;
+	border-collapse: collapse;
+	border: 1px solid #ddd;
+	font-size: 16px;
+}
+
+.gn-works-table th, 
+.gn-works-table td {
+	padding: 12px;
+	text-align: left;
+	border-bottom: 1px solid #ddd;
+}
+
+.gn-works-table th {
+	background-color: #f4f4f4;
+	font-weight: bold;
+}
+
+.gn-works-table tr:hover {
+	background-color: #f9f9f9;
+}
+
+@media screen and (max-width: 768px) {
+	.gn-works-table, 
+	.gn-works-table thead, 
+	.gn-works-table tbody, 
+	.gn-works-table th, 
+	.gn-works-table td, 
+	.gn-works-table tr {
+		display: block;
+	}
+
+	.gn-works-table thead tr {
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+
+	.gn-works-table tr {
+		border: 1px solid #ccc;
+		margin-bottom: 15px;
+	}
+
+	.gn-works-table td {
+		border: none;
+		border-bottom: 1px solid #eee;
+		position: relative;
+		padding-left: 50%;
+	}
+
+	.gn-works-table td:before {
+		position: absolute;
+		top: 12px;
+		left: 12px;
+		width: 45%;
+		padding-right: 10px;
+		white-space: nowrap;
+		content: attr(data-label);
+		font-weight: bold;
+	}
+}

@@ -100,4 +100,81 @@ class Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Public {
 
 	}
 
+	/**
+	 * Register the shortcode.
+	 *
+	 * @since    1.0.0
+	 */
+	public function register_shortcodes() {
+		add_shortcode( 'gn_table_works', array( $this, 'render_shortcode' ) );
+	}
+
+	/**
+	 * Render the works table shortcode.
+	 *
+	 * @since    1.0.0
+	 * @param    array    $atts    Attributes.
+	 * @return   string            HTML output.
+	 */
+	public function render_shortcode( $atts ) {
+		$args = array(
+			'post_type'      => 'works',
+			'posts_per_page' => -1,
+			'post_status'    => 'publish',
+		);
+
+		$query = new WP_Query( $args );
+
+		if ( ! $query->have_posts() ) {
+			return '';
+		}
+
+		ob_start();
+		?>
+		<div class="gn-works-table-container">
+			<table class="gn-works-table">
+				<thead>
+					<tr>
+						<th class="gn-col-title">Title</th>
+						<th class="gn-col-year">Year</th>
+						<th class="gn-col-duration">Duration</th>
+						<th class="gn-col-genre">Genre</th>
+						<th class="gn-col-scored-for">Scored For</th>
+						<th class="gn-col-instrumentation">Instrumentation</th>
+						<th class="gn-col-premiere">Premiere</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php while ( $query->have_posts() ) : $query->the_post(); 
+						$title = get_field('title') ?: get_the_title(); // Fallback to WP title if ACF specific title field is empty
+						$year = get_field('year');
+						$duration = get_field('duration');
+						// Genre is a select field, might return array or string. JSON says multiple=1, return_format=value
+						$genre = get_field('genre');
+						if ( is_array( $genre ) ) {
+							$genre = implode( ', ', $genre );
+						}
+						$scored_for = get_field('scored-for');
+						$instrumentation = get_field('instrumentation_details');
+						$premiere_date = get_field('date');
+					?>
+						<tr>
+							<td class="gn-col-title" data-label="Title"><?php echo esc_html( $title ); ?></td>
+							<td class="gn-col-year" data-label="Year"><?php echo esc_html( $year ); ?></td>
+							<td class="gn-col-duration" data-label="Duration"><?php echo esc_html( $duration ); ?></td>
+							<td class="gn-col-genre" data-label="Genre"><?php echo esc_html( $genre ); ?></td>
+							<td class="gn-col-scored-for" data-label="Scored For"><?php echo esc_html( $scored_for ); ?></td>
+							<td class="gn-col-instrumentation" data-label="Instrumentation"><?php echo wp_kses_post( $instrumentation ); ?></td>
+							<td class="gn-col-premiere" data-label="Premiere"><?php echo esc_html( $premiere_date ); ?></td>
+						</tr>
+					<?php endwhile; ?>
+				</tbody>
+			</table>
+		</div>
+		<?php
+		wp_reset_postdata();
+
+		return ob_get_clean();
+	}
+
 }
