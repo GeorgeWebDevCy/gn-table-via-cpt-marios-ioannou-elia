@@ -37,31 +37,32 @@
 				});
 
 				// Sort Headers
-				this.wrapper.on('click', '.gn-sortable', function () {
-					const sort = $(this).data('sort');
-					let order = 'ASC';
+                                this.wrapper.on('click', '.gn-sortable', function () {
+                                        const sort = $(this).data('sort');
+                                        let order = 'ASC';
 
-					// Toggle order if clicking same header
-					if (self.state.orderby === sort && self.state.order === 'ASC') {
-						order = 'DESC';
-					}
+                                        // Toggle order if clicking same header
+                                        if (self.state.orderby === sort && self.state.order === 'ASC') {
+                                                order = 'DESC';
+                                        }
 
-					// Update UI
-					$('.gn-sortable').removeAttr('data-order').find('.gn-sort-icon').text('');
-					$(this).attr('data-order', order.toLowerCase());
-					$(this).find('.gn-sort-icon').text(order === 'ASC' ? '▲' : '▼');
+                                        // Update UI
+                                        $('.gn-sortable').removeAttr('data-order').find('.gn-sort-icon').text('');
+                                        $(this).attr('data-order', order.toLowerCase());
+                                        $(this).find('.gn-sort-icon').text(order === 'ASC' ? '▲' : '▼');
 
-					self.state.orderby = sort;
-					self.state.order = order;
-					self.fetchWorks();
-				});
+                                        self.state.orderby = sort;
+                                        self.state.order = order;
+                                        self.state.page = 1; // Reset to first page when sorting
+                                        self.fetchWorks();
+                                });
 
-				// Pagination
-				this.wrapper.on('click', '.gn-page-btn', function () {
-					if ($(this).hasClass('active')) return;
-					self.state.page = $(this).data('page');
-					self.fetchWorks();
-				});
+                                // Pagination
+                                this.wrapper.on('click', '.gn-page-btn', function () {
+                                        if ($(this).hasClass('active')) return;
+                                        self.state.page = parseInt($(this).data('page'), 10);
+                                        self.fetchWorks();
+                                });
 			},
 
 			fetchWorks: function () {
