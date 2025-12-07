@@ -4,39 +4,49 @@
 	$(document).ready(function () {
 
 		const GnWorksTable = {
-			wrapper: $('#gn-works-wrapper'),
-			search: $('#gn-works-search'),
-			body: $('#gn-works-body'),
-			pagination: $('#gn-works-pagination'),
-			loader: $('#gn-works-loader'),
-			state: {
-				page: 1,
-				search: '',
-				orderby: 'year',
-				order: 'DESC'
-			},
+                        wrapper: $('#gn-works-wrapper'),
+                        search: $('#gn-works-search'),
+                        perPage: $('#gn-works-per-page'),
+                        body: $('#gn-works-body'),
+                        pagination: $('#gn-works-pagination'),
+                        loader: $('#gn-works-loader'),
+                        state: {
+                                page: 1,
+                                search: '',
+                                orderby: 'year',
+                                order: 'DESC',
+                                perPage: 10
+                        },
 			typingTimer: null,
 
-			init: function () {
-				if (!this.wrapper.length) return;
+                        init: function () {
+                                if (!this.wrapper.length) return;
 
-				this.bindEvents();
-			},
+                                this.state.perPage = parseInt(this.perPage.val(), 10) || 10;
+                                this.bindEvents();
+                        },
 
 			bindEvents: function () {
 				const self = this;
 
 				// Search Debounce
-				this.search.on('keyup', function () {
-					clearTimeout(self.typingTimer);
-					self.state.search = $(this).val();
-					self.state.page = 1; // Reset to page 1 on search
-					self.typingTimer = setTimeout(function () {
-						self.fetchWorks();
-					}, 500);
-				});
+                                this.search.on('keyup', function () {
+                                        clearTimeout(self.typingTimer);
+                                        self.state.search = $(this).val();
+                                        self.state.page = 1; // Reset to page 1 on search
+                                        self.typingTimer = setTimeout(function () {
+                                                self.fetchWorks();
+                                        }, 500);
+                                });
 
-				// Sort Headers
+                                // Per Page Selector
+                                this.perPage.on('change', function () {
+                                        self.state.perPage = parseInt($(this).val(), 10) || 10;
+                                        self.state.page = 1; // Reset to first page when per page changes
+                                        self.fetchWorks();
+                                });
+
+                                // Sort Headers
                                 this.wrapper.on('click', '.gn-sortable', function () {
                                         const sort = $(this).data('sort');
                                         let order = 'ASC';
@@ -75,13 +85,14 @@
 					url: gn_table_ajax.ajax_url,
 					type: 'POST',
 					data: {
-						action: 'gn_get_works',
-						nonce: gn_table_ajax.nonce,
-						page: this.state.page,
-						search: this.state.search,
-						orderby: this.state.orderby,
-						order: this.state.order
-					},
+                                                action: 'gn_get_works',
+                                                nonce: gn_table_ajax.nonce,
+                                                page: this.state.page,
+                                                search: this.state.search,
+                                                orderby: this.state.orderby,
+                                                order: this.state.order,
+                                                per_page: this.state.perPage
+                                        },
 					success: function (response) {
 						if (response.success) {
 							self.body.html(response.data.html);
