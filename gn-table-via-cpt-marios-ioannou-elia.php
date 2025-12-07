@@ -16,7 +16,7 @@
  * Plugin Name:       GN Table Via CPT For Marios Ioannou Ellia
  * Plugin URI:        https://www.georgenicolaou.me/plugins/gn-table-via-cpt-marios-ioannou-elia/
  * Description:       Generates a table based on a specific CPT for this use case
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            George Nicolaou
  * Author URI:        https://www.georgenicolaou.me/
  * License:           GPL-2.0+
@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'GN_TABLE_VIA_CPT_MARIOS_IOANNOU_ELIA_VERSION', '1.0.0' );
+define( 'GN_TABLE_VIA_CPT_MARIOS_IOANNOU_ELIA_VERSION', '1.0.1' );
 
 /**
  * The code that runs during plugin activation.
@@ -43,7 +43,7 @@ define( 'GN_TABLE_VIA_CPT_MARIOS_IOANNOU_ELIA_VERSION', '1.0.0' );
  */
 function activate_gn_table_via_cpt_marios_ioannou_elia() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-gn-table-via-cpt-marios-ioannou-elia-activator.php';
-	Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Activator::activate();
+	Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Activator::activate( plugin_basename( __FILE__ ) );
 }
 
 /**

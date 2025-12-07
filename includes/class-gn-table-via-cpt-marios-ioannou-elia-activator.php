@@ -29,8 +29,12 @@ class Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Activator {
 	 *
 	 * @since    1.0.0
 	 */
-	public static function activate() {
-
+	public static function activate( $plugin_basename ) {
+		// Check for Advanced Custom Fields PRO
+		if ( ! function_exists( 'acf_get_setting' ) || ! acf_get_setting( 'pro' ) ) {
+			deactivate_plugins( $plugin_basename );
+			wp_die( 'This plugin requires Advanced Custom Fields PRO to be installed and active.' );
+		}
 	}
 
 }
