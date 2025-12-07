@@ -80,3 +80,23 @@ function run_gn_table_via_cpt_marios_ioannou_elia() {
 
 }
 run_gn_table_via_cpt_marios_ioannou_elia();
+
+/**
+ * Initialize Plugin Update Checker
+ */
+if ( file_exists( plugin_dir_path( __FILE__ ) . 'vendor/autoload.php' ) ) {
+	require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+	
+	try {
+		$myUpdateChecker = \YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
+			'https://github.com/GeorgeWebDevCy/gn-table-via-cpt-marios-ioannou-elia',
+			__FILE__,
+			'gn-table-via-cpt-marios-ioannou-elia'
+		);
+	
+		//Set the branch that contains the stable release.
+		$myUpdateChecker->setBranch('main');
+	} catch (Exception $e) {
+		// Fail silently if PUC cannot be initialized
+	}
+}
