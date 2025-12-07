@@ -126,7 +126,20 @@ class Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Public {
 		?>
 		<div class="gn-works-wrapper" id="gn-works-wrapper">
 			<div class="gn-works-controls">
-				<input type="text" id="gn-works-search" placeholder="Search works..." />
+				<div class="gn-works-input-group">
+					<select id="gn-works-per-page">
+						<option value="10">10 per page</option>
+						<option value="20">20 per page</option>
+						<option value="30">30 per page</option>
+						<option value="40">40 per page</option>
+						<option value="50">50 per page</option>
+						<option value="100">100 per page</option>
+						<option value="-1">All</option>
+					</select>
+				</div>
+				<div class="gn-works-input-group">
+					<input type="text" id="gn-works-search" placeholder="Search works..." />
+				</div>
 			</div>
 			
 			<div class="gn-works-table-container">
@@ -146,14 +159,14 @@ class Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Public {
 					<tbody id="gn-works-body">
 						<?php 
 						// Initial Load
-						$this->render_table_rows( 1, '', 'year', 'DESC' ); 
+						$this->render_table_rows( 1, '', 'year', 'DESC', 10 ); 
 						?>
 					</tbody>
 				</table>
 			</div>
 			
 			<div id="gn-works-pagination" class="gn-works-pagination">
-				<?php $this->render_pagination( 1, '', 'year', 'DESC' ); ?>
+				<?php $this->render_pagination( 1, '', 'year', 'DESC', 10 ); ?>
 			</div>
 			<div id="gn-works-loader" style="display:none;">Loading...</div>
 		</div>
@@ -168,16 +181,17 @@ class Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Public {
 		check_ajax_referer( 'gn_table_works_nonce', 'nonce' );
 
 		$page = isset( $_POST['page'] ) ? intval( $_POST['page'] ) : 1;
+		$per_page = isset( $_POST['per_page'] ) ? intval( $_POST['per_page'] ) : 10;
 		$search = isset( $_POST['search'] ) ? sanitize_text_field( $_POST['search'] ) : '';
 		$orderby = isset( $_POST['orderby'] ) ? sanitize_text_field( $_POST['orderby'] ) : 'year';
 		$order = isset( $_POST['order'] ) ? sanitize_text_field( $_POST['order'] ) : 'DESC';
 
 		ob_start();
-		$this->render_table_rows( $page, $search, $orderby, $order );
+		$this->render_table_rows( $page, $search, $orderby, $order, $per_page );
 		$html = ob_get_clean();
 
 		ob_start();
-		$this->render_pagination( $page, $search, $orderby, $order );
+		$this->render_pagination( $page, $search, $orderby, $order, $per_page );
 		$pagination = ob_get_clean();
 
 		wp_send_json_success( array(
@@ -189,8 +203,12 @@ class Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Public {
 	/**
 	 * Render Pagination
 	 */
-	private function render_pagination( $page, $search, $orderby, $order ) {
-		$args = $this->get_query_args( $page, $search, $orderby, $order );
+	private function render_pagination( $page, $search, $orderby, $order, $per_page ) {
+		if ( $per_page == -1 ) {
+			return; // No pagination for 'All'
+		}
+
+		$args = $this->get_query_args( $page, $search, $orderby, $order, $per_page );
 		$query = new WP_Query( $args );
 		$total_pages = $query->max_num_pages;
 
@@ -210,8 +228,7 @@ class Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Public {
 	/**
 	 * Get WP_Query Args
 	 */
-	private function get_query_args( $page, $search, $orderby, $order ) {
-		$per_page = 10;
+	private function get_query_args( $page, $search, $orderby, $order, $per_page ) {
 		$args = array(
 			'post_type'      => 'works',
 			'posts_per_page' => $per_page,
@@ -246,8 +263,8 @@ class Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Public {
 	/**
 	 * Helper to render rows
 	 */
-	private function render_table_rows( $page, $search, $orderby, $order ) {
-		$args = $this->get_query_args( $page, $search, $orderby, $order );
+	private function render_table_rows( $page, $search, $orderby, $order, $per_page ) {
+		$args = $this->get_query_args( $page, $search, $orderby, $order, $per_page );
 		$query = new WP_Query( $args );
 
 		if ( ! $query->have_posts() ) {
@@ -255,7 +272,10 @@ class Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Public {
 			return;
 		}
 
-		$start_index = ( ( $page - 1 ) * 10 ) + 1;
+		$start_index = ( $page > 1 ) ? ( ( $page - 1 ) * $per_page ) + 1 : 1;
+		if ( $per_page == -1 ) {
+			$start_index = 1;
+		}
 
 		while ( $query->have_posts() ) : $query->the_post(); 
 			$title = get_field('title') ?: get_the_title();

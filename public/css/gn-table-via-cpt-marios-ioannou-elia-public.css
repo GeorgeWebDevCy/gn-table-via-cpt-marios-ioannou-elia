@@ -13,20 +13,45 @@
 .gn-works-controls {
 	margin-bottom: 20px;
 	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 15px;
+	flex-wrap: wrap;
+}
+
+.gn-works-input-group {
+	flex: 1;
+	min-width: 200px;
+}
+
+/* Align right side items to the right */
+.gn-works-controls .gn-works-input-group:last-child {
+	display: flex;
 	justify-content: flex-end;
 }
 
-#gn-works-search {
+#gn-works-search,
+#gn-works-per-page {
 	padding: 10px 15px;
 	border: 1px solid #ddd;
 	border-radius: 4px;
 	width: 100%;
-	max-width: 300px;
 	font-size: 14px;
 	transition: border-color 0.3s ease;
+	background-color: #fff;
 }
 
-#gn-works-search:focus {
+#gn-works-search {
+	max-width: 300px;
+}
+
+#gn-works-per-page {
+	max-width: 150px;
+	cursor: pointer;
+}
+
+#gn-works-search:focus,
+#gn-works-per-page:focus {
 	border-color: #0073aa;
 	outline: none;
 }
