@@ -98,6 +98,11 @@ class Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Public {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/gn-table-via-cpt-marios-ioannou-elia-public.js', array( 'jquery' ), $this->version, false );
 
+		wp_localize_script( $this->plugin_name, 'gn_table_ajax', array(
+			'ajax_url' => admin_url( 'admin-ajax.php' ),
+			'nonce'    => wp_create_nonce( 'gn_table_works_nonce' ),
+		) );
+
 	}
 
 	/**
@@ -117,64 +122,168 @@ class Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Public {
 	 * @return   string            HTML output.
 	 */
 	public function render_shortcode( $atts ) {
+		ob_start();
+		?>
+		<div class="gn-works-wrapper" id="gn-works-wrapper">
+			<div class="gn-works-controls">
+				<input type="text" id="gn-works-search" placeholder="Search works..." />
+			</div>
+			
+			<div class="gn-works-table-container">
+				<table class="gn-works-table">
+					<thead>
+						<tr>
+							<th class="gn-col-index">#</th>
+							<th class="gn-sortable" data-sort="title">Title <span class="gn-sort-icon"></span></th>
+							<th class="gn-sortable" data-sort="year" data-order="desc">Year <span class="gn-sort-icon">▼</span></th>
+							<th class="gn-col-duration">Duration</th>
+							<th class="gn-col-genre">Genre</th>
+							<th class="gn-col-scored-for">Scored For</th>
+							<th class="gn-col-instrumentation">Instrumentation</th>
+							<th class="gn-col-premiere">Premiere</th>
+						</tr>
+					</thead>
+					<tbody id="gn-works-body">
+						<?php 
+						// Initial Load
+						$this->render_table_rows( 1, '', 'year', 'DESC' ); 
+						?>
+					</tbody>
+				</table>
+			</div>
+			
+			<div id="gn-works-pagination" class="gn-works-pagination">
+				<?php $this->render_pagination( 1, '', 'year', 'DESC' ); ?>
+			</div>
+			<div id="gn-works-loader" style="display:none;">Loading...</div>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+	/**
+	 * AJAX Handler for getting works
+	 */
+	public function ajax_get_works() {
+		check_ajax_referer( 'gn_table_works_nonce', 'nonce' );
+
+		$page = isset( $_POST['page'] ) ? intval( $_POST['page'] ) : 1;
+		$search = isset( $_POST['search'] ) ? sanitize_text_field( $_POST['search'] ) : '';
+		$orderby = isset( $_POST['orderby'] ) ? sanitize_text_field( $_POST['orderby'] ) : 'year';
+		$order = isset( $_POST['order'] ) ? sanitize_text_field( $_POST['order'] ) : 'DESC';
+
+		ob_start();
+		$this->render_table_rows( $page, $search, $orderby, $order );
+		$html = ob_get_clean();
+
+		ob_start();
+		$this->render_pagination( $page, $search, $orderby, $order );
+		$pagination = ob_get_clean();
+
+		wp_send_json_success( array(
+			'html' => $html,
+			'pagination' => $pagination
+		) );
+	}
+
+	/**
+	 * Render Pagination
+	 */
+	private function render_pagination( $page, $search, $orderby, $order ) {
+		$args = $this->get_query_args( $page, $search, $orderby, $order );
+		$query = new WP_Query( $args );
+		$total_pages = $query->max_num_pages;
+
+		if ( $total_pages <= 1 ) {
+			return;
+		}
+
+		echo '<div class="gn-pagination-links">';
+		for ( $i = 1; $i <= $total_pages; $i++ ) {
+			$active_class = ( $i === $page ) ? 'active' : '';
+			echo '<button class="gn-page-btn ' . esc_attr( $active_class ) . '" data-page="' . intval( $i ) . '">' . intval( $i ) . '</button>';
+		}
+		echo '</div>';
+		wp_reset_postdata();
+	}
+
+	/**
+	 * Get WP_Query Args
+	 */
+	private function get_query_args( $page, $search, $orderby, $order ) {
+		$per_page = 10;
 		$args = array(
 			'post_type'      => 'works',
-			'posts_per_page' => -1,
+			'posts_per_page' => $per_page,
+			'paged'          => $page,
 			'post_status'    => 'publish',
 		);
 
+		// Search
+		if ( ! empty( $search ) ) {
+			$args['s'] = $search;
+		}
+
+		// Sorting
+		$args['order'] = $order;
+		
+		if ( 'title' === $orderby ) {
+			if ( ! empty( $search ) ) {
+				// When searching, WordPress uses relevancy by default, but if explicit orderby title is requested:
+                $args['orderby'] = 'title';
+            } else {
+                $args['orderby'] = 'title';
+            }
+		} elseif ( 'year' === $orderby ) {
+			$args['meta_key'] = 'year';
+			$args['orderby'] = 'meta_value'; // Use meta_value for alphanumeric sort of year (e.g. 2023, 2024)
+            // If year needs to be numeric add 'meta_type' => 'NUMERIC'
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Helper to render rows
+	 */
+	private function render_table_rows( $page, $search, $orderby, $order ) {
+		$args = $this->get_query_args( $page, $search, $orderby, $order );
 		$query = new WP_Query( $args );
 
 		if ( ! $query->have_posts() ) {
-			return '';
+			echo '<tr><td colspan="8">No works found.</td></tr>';
+			return;
 		}
 
-		ob_start();
-		?>
-		<div class="gn-works-table-container">
-			<table class="gn-works-table">
-				<thead>
-					<tr>
-						<th class="gn-col-title">Title</th>
-						<th class="gn-col-year">Year</th>
-						<th class="gn-col-duration">Duration</th>
-						<th class="gn-col-genre">Genre</th>
-						<th class="gn-col-scored-for">Scored For</th>
-						<th class="gn-col-instrumentation">Instrumentation</th>
-						<th class="gn-col-premiere">Premiere</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php while ( $query->have_posts() ) : $query->the_post(); 
-						$title = get_field('title') ?: get_the_title(); // Fallback to WP title if ACF specific title field is empty
-						$year = get_field('year');
-						$duration = get_field('duration');
-						// Genre is a select field, might return array or string. JSON says multiple=1, return_format=value
-						$genre = get_field('genre');
-						if ( is_array( $genre ) ) {
-							$genre = implode( ', ', $genre );
-						}
-						$scored_for = get_field('scored-for');
-						$instrumentation = get_field('instrumentation_details');
-						$premiere_date = get_field('date');
-					?>
-						<tr>
-							<td class="gn-col-title" data-label="Title"><?php echo esc_html( $title ); ?></td>
-							<td class="gn-col-year" data-label="Year"><?php echo esc_html( $year ); ?></td>
-							<td class="gn-col-duration" data-label="Duration"><?php echo esc_html( $duration ); ?></td>
-							<td class="gn-col-genre" data-label="Genre"><?php echo esc_html( $genre ); ?></td>
-							<td class="gn-col-scored-for" data-label="Scored For"><?php echo esc_html( $scored_for ); ?></td>
-							<td class="gn-col-instrumentation" data-label="Instrumentation"><?php echo wp_kses_post( $instrumentation ); ?></td>
-							<td class="gn-col-premiere" data-label="Premiere"><?php echo esc_html( $premiere_date ); ?></td>
-						</tr>
-					<?php endwhile; ?>
-				</tbody>
-			</table>
-		</div>
-		<?php
-		wp_reset_postdata();
+		$start_index = ( ( $page - 1 ) * 10 ) + 1;
 
-		return ob_get_clean();
+		while ( $query->have_posts() ) : $query->the_post(); 
+			$title = get_field('title') ?: get_the_title();
+			$year = get_field('year');
+			$duration = get_field('duration');
+			$genre = get_field('genre');
+			if ( is_array( $genre ) ) {
+				$genre = implode( ', ', $genre );
+			}
+			$scored_for = get_field('scored-for');
+			$instrumentation = get_field('instrumentation_details');
+			$premiere_date = get_field('date');
+			$permalink = get_permalink();
+		?>
+			<tr>
+				<td class="gn-col-index" data-label="#"><?php echo intval( $start_index++ ); ?></td>
+				<td class="gn-col-title" data-label="Title">
+					<a href="<?php echo esc_url( $permalink ); ?>"><?php echo esc_html( $title ); ?></a>
+				</td>
+				<td class="gn-col-year" data-label="Year"><?php echo esc_html( $year ); ?></td>
+				<td class="gn-col-duration" data-label="Duration"><?php echo esc_html( $duration ); ?></td>
+				<td class="gn-col-genre" data-label="Genre"><?php echo esc_html( $genre ); ?></td>
+				<td class="gn-col-scored-for" data-label="Scored For"><?php echo esc_html( $scored_for ); ?></td>
+				<td class="gn-col-instrumentation" data-label="Instrumentation"><?php echo wp_kses_post( $instrumentation ); ?></td>
+				<td class="gn-col-premiere" data-label="Premiere"><?php echo esc_html( $premiere_date ); ?></td>
+			</tr>
+		<?php endwhile;
+		wp_reset_postdata();
 	}
 
 }
