@@ -146,6 +146,7 @@ class Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Public {
 				<table class="gn-works-table">
 					<thead>
 						<tr>
+							<th class="gn-col-index"></th>
 							<th class="gn-sortable" data-sort="title">Title <span class="gn-sort-icon"></span></th>
 							<th class="gn-sortable" data-sort="year" data-order="desc">Year <span class="gn-sort-icon">▼</span></th>
 							<th class="gn-col-scored-for">Scored For</th>
@@ -264,8 +265,13 @@ class Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Public {
 		$query = new WP_Query( $args );
 
 		if ( ! $query->have_posts() ) {
-			echo '<tr><td colspan="4">No works found.</td></tr>';
+			echo '<tr><td colspan="5">No works found.</td></tr>';
 			return;
+		}
+
+		$start_index = ( $page > 1 ) ? ( ( $page - 1 ) * $per_page ) + 1 : 1;
+		if ( $per_page == -1 ) {
+			$start_index = 1;
 		}
 
 		while ( $query->have_posts() ) : $query->the_post(); 
@@ -276,6 +282,7 @@ class Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Public {
 			$permalink = get_permalink();
 		?>
 			<tr>
+				<td class="gn-col-index" data-label="#"><?php echo intval( $start_index++ ); ?></td>
 				<td class="gn-col-title" data-label="Title">
 					<a href="<?php echo esc_url( $permalink ); ?>"><?php echo esc_html( $title ); ?></a>
 				</td>
