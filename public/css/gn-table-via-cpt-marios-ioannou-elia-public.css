@@ -135,7 +135,7 @@
 }
 
 .gn-col-title a:hover {
-	text-decoration: underline;
+	text-decoration: none !important;
 }
 
 .gn-col-year {
