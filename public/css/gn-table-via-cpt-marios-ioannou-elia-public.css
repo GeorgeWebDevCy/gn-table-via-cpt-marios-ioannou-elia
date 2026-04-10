@@ -117,8 +117,7 @@
 }
 
 .gn-col-title {
-	width: 10%;
-	max-width: 0;
+	width: 18%;
 	overflow: hidden;
 	white-space: nowrap;
 }
