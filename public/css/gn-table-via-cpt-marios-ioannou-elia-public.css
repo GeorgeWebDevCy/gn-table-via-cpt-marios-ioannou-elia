@@ -146,6 +146,7 @@
 
 .gn-col-duration {
 	width: 100px;
+	text-align: center !important;
 }
 
 .gn-col-scored-for {
