@@ -73,6 +73,7 @@
 .gn-works-table {
 	width: 100%;
 	border-collapse: collapse;
+	table-layout: fixed;
 	font-size: 15px;
 	color: #333;
 }
@@ -116,10 +117,12 @@
 }
 
 .gn-col-title {
-	width: 34%;
+	width: 28%;
 }
 
 .gn-col-title a {
+	display: block;
+	overflow-wrap: anywhere;
 	color: #0073aa;
 	text-decoration: none;
 	font-weight: 500;
