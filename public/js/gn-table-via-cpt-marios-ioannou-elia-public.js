@@ -15,14 +15,14 @@
                                 search: '',
                                 orderby: 'year',
                                 order: 'DESC',
-                                perPage: 10
+                                perPage: 20
                         },
 			typingTimer: null,
 
                         init: function () {
                                 if (!this.wrapper.length) return;
 
-                                this.state.perPage = parseInt(this.perPage.val(), 10) || 10;
+                                this.state.perPage = parseInt(this.perPage.val(), 10) || 20;
                                 this.bindEvents();
                         },
 

@@ -129,7 +129,7 @@ class Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Public {
 				<div class="gn-works-input-group">
 					<select id="gn-works-per-page">
 						<option value="10">10 per page</option>
-						<option value="20">20 per page</option>
+						<option value="20" selected>20 per page</option>
 						<option value="30">30 per page</option>
 						<option value="40">40 per page</option>
 						<option value="50">50 per page</option>
@@ -156,14 +156,14 @@ class Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Public {
 					<tbody id="gn-works-body">
 						<?php 
 						// Initial Load
-						$this->render_table_rows( 1, '', 'year', 'DESC', 10 ); 
+						$this->render_table_rows( 1, '', 'year', 'DESC', 20 ); 
 						?>
 					</tbody>
 				</table>
 			</div>
 			
 			<div id="gn-works-pagination" class="gn-works-pagination">
-				<?php $this->render_pagination( 1, '', 'year', 'DESC', 10 ); ?>
+				<?php $this->render_pagination( 1, '', 'year', 'DESC', 20 ); ?>
 			</div>
 			<div id="gn-works-loader" style="display:none;">Loading...</div>
 		</div>
@@ -178,7 +178,7 @@ class Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Public {
 		check_ajax_referer( 'gn_table_works_nonce', 'nonce' );
 
 		$page = isset( $_POST['page'] ) ? intval( $_POST['page'] ) : 1;
-		$per_page = isset( $_POST['per_page'] ) ? intval( $_POST['per_page'] ) : 10;
+		$per_page = isset( $_POST['per_page'] ) ? intval( $_POST['per_page'] ) : 20;
 		$search = isset( $_POST['search'] ) ? sanitize_text_field( $_POST['search'] ) : '';
 		$orderby = isset( $_POST['orderby'] ) ? sanitize_text_field( $_POST['orderby'] ) : 'year';
 		$order = isset( $_POST['order'] ) ? sanitize_text_field( $_POST['order'] ) : 'DESC';
