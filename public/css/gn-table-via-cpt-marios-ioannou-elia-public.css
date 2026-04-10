@@ -138,6 +138,16 @@
 	text-decoration: none !important;
 }
 
+@supports (-webkit-touch-callout: none) {
+
+	.gn-col-title a {
+		width: -webkit-fit-content;
+		width: fit-content;
+		min-width: 0;
+		max-width: 100%;
+	}
+}
+
 .gn-col-year {
 	width: 60px;
 	text-align: center !important;
