@@ -209,6 +209,21 @@
 		width: 100%;
 	}
 
+	.gn-works-controls {
+		align-items: stretch;
+	}
+
+	.gn-works-input-group,
+	.gn-works-controls .gn-works-input-group:last-child {
+		flex: 1 1 100%;
+		justify-content: stretch;
+	}
+
+	#gn-works-search,
+	#gn-works-per-page {
+		max-width: none;
+	}
+
 	.gn-works-table,
 	.gn-works-table thead,
 	.gn-works-table tbody,
@@ -221,6 +236,10 @@
 	.gn-works-table thead {
 		display: none;
 		/* Hide headers completely on mobile */
+	}
+
+	.gn-works-table {
+		table-layout: auto;
 	}
 
 	.gn-works-table tr {
@@ -254,6 +273,19 @@
 		font-weight: 600;
 		color: #555;
 		font-size: 13px;
+	}
+
+	.gn-col-title,
+	.gn-col-year,
+	.gn-col-scored-for,
+	.gn-col-duration {
+		width: auto;
+		max-width: none;
+	}
+
+	.gn-col-scored-for {
+		white-space: normal;
+		overflow-wrap: anywhere;
 	}
 
 	.gn-col-index {
