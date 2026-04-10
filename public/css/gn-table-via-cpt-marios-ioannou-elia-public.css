@@ -110,8 +110,13 @@
 }
 
 .gn-col-index {
-	width: 50px;
+	width: 56px;
 	color: #888;
+	text-align: center !important;
+}
+
+.gn-col-title {
+	width: 34%;
 }
 
 .gn-col-title a {
@@ -244,6 +249,7 @@
 		padding-left: 15px !important;
 		color: #333;
 		font-weight: bold;
+		justify-content: center;
 	}
 
 	.gn-col-index:before {

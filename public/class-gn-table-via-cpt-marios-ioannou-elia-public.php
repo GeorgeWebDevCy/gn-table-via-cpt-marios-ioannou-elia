@@ -147,7 +147,7 @@ class Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Public {
 					<thead>
 						<tr>
 							<th class="gn-col-index"></th>
-							<th class="gn-sortable" data-sort="title">Title <span class="gn-sort-icon"></span></th>
+							<th class="gn-col-title gn-sortable" data-sort="title">Title <span class="gn-sort-icon"></span></th>
 							<th class="gn-sortable" data-sort="year" data-order="desc">Year <span class="gn-sort-icon">▼</span></th>
 							<th class="gn-col-scored-for">Scored For</th>
 							<th class="gn-col-duration">Duration</th>
