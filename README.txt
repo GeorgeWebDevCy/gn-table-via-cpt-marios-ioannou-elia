@@ -4,7 +4,7 @@ Donate link: https://www.georgenicolaou.me/
 Tags: cpt, acf, table, custom post type, works
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 1.0.21
+Stable tag: 1.0.22
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires PHP: 7.4
@@ -61,6 +61,9 @@ No, this plugin assumes the `works` CPT and its associated ACF fields are alread
 This plugin will automatically deactivate itself to prevent errors, as it relies heavily on ACF functions.
 
 == Changelog ==
+
+= 1.0.22 =
+*   Bump plugin version number.
 
 = 1.0.21 =
 *   Limited title links to the width of their anchor text.
