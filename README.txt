@@ -4,7 +4,7 @@ Donate link: https://www.georgenicolaou.me/
 Tags: cpt, acf, table, custom post type, works
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 1.0.14
+Stable tag: 1.0.15
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires PHP: 7.4
@@ -61,6 +61,10 @@ No, this plugin assumes the `works` CPT and its associated ACF fields are alread
 This plugin will automatically deactivate itself to prevent errors, as it relies heavily on ACF functions.
 
 == Changelog ==
+
+= 1.0.15 =
+*   Set the title column width to 10%.
+*   Bump plugin version number.
 
 = 1.0.14 =
 *   Tightened the year column width and applied the year column class to the header cell.
