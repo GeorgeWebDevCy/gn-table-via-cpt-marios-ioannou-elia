@@ -68,8 +68,11 @@
                                 });
 
                                 // Pagination
-                                this.wrapper.on('click', '.gn-page-btn', function () {
-                                        if ($(this).hasClass('active')) return;
+                                this.wrapper.on('click', '.gn-page-link', function (event) {
+                                        event.preventDefault();
+
+                                        if ($(this).attr('aria-current') === 'page') return;
+
                                         self.state.page = parseInt($(this).data('page'), 10);
                                         self.fetchWorks();
                                 });

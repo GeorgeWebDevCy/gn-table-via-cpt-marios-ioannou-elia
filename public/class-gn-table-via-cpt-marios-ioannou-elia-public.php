@@ -213,12 +213,35 @@ class Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Public {
 			return;
 		}
 
-		echo '<div class="gn-pagination-links">';
-		for ( $i = 1; $i <= $total_pages; $i++ ) {
-			$active_class = ( $i === $page ) ? 'active' : '';
-			echo '<button class="gn-page-btn ' . esc_attr( $active_class ) . '" data-page="' . intval( $i ) . '">' . intval( $i ) . '</button>';
+		$previous_icon = '<i class="icon"><svg class="default" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M314-442.5h476v-75H314L533.5-737l-53.5-53-310 310 310 310 53.5-53L314-442.5Z"></path></svg></i>';
+		$next_icon = '<i class="icon"><svg class="default" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M646-442.5H170v-75h476L426.5-737l53.5-53 310 310-310 310-53.5-53L646-442.5Z"></path></svg></i>';
+
+		echo '<div class="holder"><ul class="pagination -default -unlist">';
+
+		if ( $page > 1 ) {
+			echo '<li class="page-item">';
+			echo '<a href="#" class="gn-page-link page-link button -unlink -pagination -flat" data-page="' . intval( $page - 1 ) . '" aria-label="Previous" rel="prev">' . $previous_icon . '</a>';
+			echo '</li>';
 		}
-		echo '</div>';
+
+		for ( $i = 1; $i <= $total_pages; $i++ ) {
+			$link_classes = ( $i === $page )
+				? 'gn-page-link page-link button -unlink -pagination -default'
+				: 'gn-page-link page-link button -unlink -pagination -default -flat';
+			$current_page = ( $i === $page ) ? ' aria-current="page"' : '';
+
+			echo '<li class="page-item">';
+			echo '<a href="#" class="' . esc_attr( $link_classes ) . '" data-page="' . intval( $i ) . '" aria-label="Page"' . $current_page . '>' . intval( $i ) . '</a>';
+			echo '</li>';
+		}
+
+		if ( $page < $total_pages ) {
+			echo '<li class="page-item">';
+			echo '<a href="#" class="gn-page-link page-link button -unlink -pagination -flat" data-page="' . intval( $page + 1 ) . '" aria-label="Next" rel="next">' . $next_icon . '</a>';
+			echo '</li>';
+		}
+
+		echo '</ul></div>';
 		wp_reset_postdata();
 	}
 
