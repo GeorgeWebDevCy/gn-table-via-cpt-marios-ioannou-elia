@@ -118,11 +118,15 @@
 
 .gn-col-title {
 	width: 10%;
+	max-width: 0;
+	overflow: hidden;
 	white-space: nowrap;
 }
 
 .gn-col-title a {
 	display: block;
+	width: 100%;
+	max-width: 100%;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
