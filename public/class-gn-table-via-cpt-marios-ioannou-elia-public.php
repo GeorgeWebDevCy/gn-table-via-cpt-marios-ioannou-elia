@@ -146,14 +146,10 @@ class Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Public {
 				<table class="gn-works-table">
 					<thead>
 						<tr>
-							<th class="gn-col-index">#</th>
 							<th class="gn-sortable" data-sort="title">Title <span class="gn-sort-icon"></span></th>
 							<th class="gn-sortable" data-sort="year" data-order="desc">Year <span class="gn-sort-icon">▼</span></th>
-							<th class="gn-col-duration">Duration</th>
-							<th class="gn-col-genre">Genre</th>
 							<th class="gn-col-scored-for">Scored For</th>
-							<th class="gn-col-instrumentation">Instrumentation</th>
-							<th class="gn-col-premiere">Premiere</th>
+							<th class="gn-col-duration">Duration</th>
 						</tr>
 					</thead>
 					<tbody id="gn-works-body">
@@ -268,39 +264,24 @@ class Gn_Table_Via_Cpt_Marios_Ioannou_Elia_Public {
 		$query = new WP_Query( $args );
 
 		if ( ! $query->have_posts() ) {
-			echo '<tr><td colspan="8">No works found.</td></tr>';
+			echo '<tr><td colspan="4">No works found.</td></tr>';
 			return;
-		}
-
-		$start_index = ( $page > 1 ) ? ( ( $page - 1 ) * $per_page ) + 1 : 1;
-		if ( $per_page == -1 ) {
-			$start_index = 1;
 		}
 
 		while ( $query->have_posts() ) : $query->the_post(); 
 			$title = get_field('title') ?: get_the_title();
 			$year = get_field('year');
 			$duration = get_field('duration');
-			$genre = get_field('genre');
-			if ( is_array( $genre ) ) {
-				$genre = implode( ', ', $genre );
-			}
 			$scored_for = get_field('scored-for');
-			$instrumentation = get_field('instrumentation_details');
-			$premiere_date = get_field('date');
 			$permalink = get_permalink();
 		?>
 			<tr>
-				<td class="gn-col-index" data-label="#"><?php echo intval( $start_index++ ); ?></td>
 				<td class="gn-col-title" data-label="Title">
 					<a href="<?php echo esc_url( $permalink ); ?>"><?php echo esc_html( $title ); ?></a>
 				</td>
 				<td class="gn-col-year" data-label="Year"><?php echo esc_html( $year ); ?></td>
-				<td class="gn-col-duration" data-label="Duration"><?php echo esc_html( $duration ); ?></td>
-				<td class="gn-col-genre" data-label="Genre"><?php echo esc_html( $genre ); ?></td>
 				<td class="gn-col-scored-for" data-label="Scored For"><?php echo esc_html( $scored_for ); ?></td>
-				<td class="gn-col-instrumentation" data-label="Instrumentation"><?php echo wp_kses_post( $instrumentation ); ?></td>
-				<td class="gn-col-premiere" data-label="Premiere"><?php echo esc_html( $premiere_date ); ?></td>
+				<td class="gn-col-duration" data-label="Duration"><?php echo esc_html( $duration ); ?></td>
 			</tr>
 		<?php endwhile;
 		wp_reset_postdata();
